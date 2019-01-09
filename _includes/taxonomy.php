@@ -6,7 +6,7 @@
 ** custom field groups/options show on that content item.
 ************************************************************/
 add_action( 'init', 'custom_fields_taxonomy', 0 );
-function fields_taxonomy() {
+function custom_fields_taxonomy() {
 	$labels = array(
 		'name'                       => _x( 'Content Fields', 'Taxonomy General Name', 'text_domain' ),
 		'singular_name'              => _x( 'Field', 'Taxonomy Singular Name', 'text_domain' ),
@@ -32,13 +32,12 @@ function fields_taxonomy() {
 	$args = array(
 		'labels'                     => $labels,
 		'hierarchical'               => true,
-		'public'                     => true,
+		'public'                     => false,
 		'show_ui'                    => true,
 		'show_admin_column'          => false,
 		'show_in_nav_menus'          => false,
 		'show_tagcloud'              => false,
 		'rewrite'                    => false,
-		'show_in_rest'               => true,
 	);
 	register_taxonomy( 'custom_fields', array( 'post' ), $args );
 }

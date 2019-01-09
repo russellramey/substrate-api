@@ -4,13 +4,7 @@
 ** Adds post_metadata to API response
 ************************************************************/
 // Array for Post Types
-$contentTypes = [];
-// Get all public Post Types
-$postTypes = get_post_types(array('public'=>true));
-// Foreach type, push to Types array
-foreach($postTypes as $type){
-	array_push($contentTypes, $type);
-}
+$contentTypes = get_available_post_types();
 // Register new field for each Type
 register_rest_field( $contentTypes, 'metadata', array(
     'get_callback' => function ( $data ) {
@@ -26,27 +20,28 @@ register_rest_field( $contentTypes, 'metadata', array(
 ************************************************************/
 add_action( 'rest_api_init', 'add_taxonomy_slugs_to_api' );
 function add_taxonomy_slugs_to_api() {
+
+	// Array for Post Types
+	$contentTypes = get_available_post_types();
+
 	// Register new api field
-    register_rest_field( 'post', 'tag_slugs',
-        array(
-            'get_callback'    => 'get_content_type_tax_slug',
-            'update_callback' => null,
-            'schema'          => null,
-        )
-    );
+	register_rest_field( $contentTypes, 'terms',
+		array(
+			'get_callback'    => 'get_content_type_tax_slug',
+			'update_callback' => null,
+			'schema'          => null,
+		)
+	);
 }
-function get_content_type_tax_slug( $object, $field_name, $request ) {
+function get_content_type_tax_slug( $object ) {
 	// Empty array
-    $formatted_categories = array();
-	// Get the taxonomy
-    $categories = get_the_terms( $object['id'], 'post_tag' );
-	// It taxonomy obj exists
-	if($categories){
-		foreach ($categories as $category) {
-	        $formatted_categories[] = $category->slug;
-	    }
-		// Return new data
-		return $formatted_categories;
+    $formatted_terms = array();
+	// Get the Terms of the object->id
+	$terms = wp_get_post_terms($object['id']);
+	// It terms obj exists
+	if($terms){
+		// Return terms obj
+		return $terms;
 	}
 }
 
@@ -79,4 +74,23 @@ function rest_api_filter_add_filter_param( $args, $request ) {
 		}
 	}
 	return $args;
+}
+
+
+/***********************************************************
+** POST TYPE HELPER
+** Get all Available Post Types
+** This function looks for all Public Post Types, incuding CPT
+************************************************************/
+function get_available_post_types() {
+	$contentTypes = [];
+	// Get all public Post Types
+	$postTypes = get_post_types(array('public'=>true));
+	// Foreach type, push to Types array
+	foreach($postTypes as $type){
+		array_push($contentTypes, $type);
+	}
+
+	// Return data
+	return $contentTypes;
 }
