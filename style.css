@@ -1,8 +1,8 @@
 /*
 
 Theme Name: Substrate REST
-Theme Author: Russell Ramey
+Author: Russell Ramey
 Version: 1.1
-Theme Description: Blank theme to support WP Rest API delievery and endpoints for stand alone Sabre Corporate Marketing landing pages, microsites, and apps.
+Theme Description: Blank theme to support WP Rest API delievery and endpoints. Custom features include: Automatic post metadata (custom fields) included in JSON response, Query manipulation using the ?filter parameter to alter the WP_Query.
 
 */
